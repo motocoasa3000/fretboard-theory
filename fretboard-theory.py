@@ -1,74 +1,68 @@
-# music_theory.py
+# fretboard.py
+from music_theory import CHROMATIC_NOTES, STANDARD_TUNING, get_note_index
 
-# 1. The Chromatic Scale: All 12 notes. Using sharps for consistency.
-CHROMATIC_NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+class Fretboard:
+    def __init__(self, tuning=STANDARD_TUNING, num_frets=12):
+        self.tuning = tuning
+        self.num_frets = num_frets
+        self.num_strings = len(tuning)
+        self.notes = self._initialize_notes()
 
-# 2. Standard Guitar Tuning (6 strings, from low to high)
-STANDARD_TUNING = ['E2', 'A2', 'D3', 'G3', 'B3', 'E4'] # Adding octave numbers for clarity, though for scales it's often irrelevant.
+    def _initialize_notes(self):
+        """
+        Creates a 2D list (list of lists) representing the fretboard.
+        fretboard[string][fret] = note_name
+        """
+        fretboard = []
+        for string_index, open_note in enumerate(self.tuning):
+            string_notes = []
+            open_note_index = get_note_index(open_note)
+            for fret in range(self.num_frets + 1):
+                note_index = (open_note_index + fret) % len(CHROMATIC_NOTES)
+                string_notes.append(CHROMATIC_NOTES[note_index])
+            fretboard.append(string_notes)
+        return fretboard
 
-# 3. Scale Formulas: Defined by the sequence of intervals (in half-steps) from the root.
-SCALE_FORMULAS = {
-    "major": [2, 2, 1, 2, 2, 2, 1],           # Whole, Whole, Half, Whole, Whole, Whole, Half
-    "natural_minor": [2, 1, 2, 2, 1, 2, 2],
-    "major_pentatonic": [2, 2, 3, 2, 3],
-    "minor_pentatonic": [3, 2, 2, 3, 2],
-    "harmonic_minor": [2, 1, 2, 2, 1, 3, 1],  # Let's add a more complex one to show depth.
-}
+    def find_notes(self, target_notes):
+        """
+        Finds all positions on the fretboard where a note in the target_notes list appears.
+        Returns a list of tuples: (string_index, fret, note_name)
+        """
+        found_positions = []
+        for string_idx in range(self.num_strings):
+            for fret in range(self.num_frets + 1):
+                note = self.notes[string_idx][fret]
+                if note in target_notes:
+                    found_positions.append((string_idx, fret, note))
+        return found_positions
 
-# 4. Chord Formulas: Defined by the intervals (in half-steps) that make up the chord.
-CHORD_FORMULAS = {
-    "maj": [0, 4, 7],       # Root, Major 3rd, Perfect 5th
-    "min": [0, 3, 7],       # Root, Minor 3rd, Perfect 5th
-    "dim": [0, 3, 6],       # Root, Minor 3rd, Diminished 5th
-    "7": [0, 4, 7, 10],     # Dominant 7th: Root, Maj 3, Perf 5, Min 7
-    "maj7": [0, 4, 7, 11],  # Major 7th: Root, Maj 3, Perf 5, Maj 7
-    "min7": [0, 3, 7, 10],  # Minor 7th: Root, Min 3, Perf 5, Min 7
-}
+    def visualize_fretboard(self, highlight_notes=None):
+        """
+        Creates a simple text-based visualization of the fretboard.
+        If highlight_notes is provided, it will mark those notes.
+        """
+        if highlight_notes is None:
+            highlight_notes = []
 
-# music_theory.py (continued)
+        print("Guitar Fretboard (0 is open string)")
+        print("String | " + " ".join(f"Fret {fret:2}" for fret in range(self.num_frets + 1)))
+        print("-" * (10 + self.num_frets * 6))
 
-def get_note_index(note_name):
-    """
-    Finds the position of a note in the CHROMATIC_NOTES list, ignoring octave.
-    Example: get_note_index('C#') -> 1, get_note_index('Eb') -> 3 (But we use D#)
-    """
-    base_note = note_name[0]  # Get just the letter part (C, D, E, etc.)
-    if len(note_name) > 1 and note_name[1] == 'b':
-        # Handle flats by converting them to sharps for simplicity in our model.
-        # This is a music theory logic decision! C# and Db are enharmonic equivalents.
-        flat_to_sharp = {'Cb': 'B', 'Db': 'C#', 'Eb': 'D#', 'Fb': 'E', 'Gb': 'F#', 'Ab': 'G#', 'Bb': 'A#'}
-        base_note = flat_to_sharp.get(note_name[:2], base_note) # Use the first two chars if it's a flat
-    else:
-        base_note = note_name # It's a natural or sharp
+        string_names = ['Low E', 'A', 'D', 'G', 'B', 'High E']
+        for string_idx, string_name in enumerate(string_names):
+            display_string = f"{string_name:>6} | "
+            for fret in range(self.num_frets + 1):
+                note = self.notes[string_idx][fret]
+                display_note = f"[{note}]" if note in highlight_notes else f" {note} "
+                display_string += f"{display_note:>5}"
+            print(display_string)
 
-    try:
-        return CHROMATIC_NOTES.index(base_note)
-    except ValueError:
-        raise ValueError(f"Note '{note_name}' is not a valid note name.")
-
-def get_notes_in_scale(root_note, scale_type):
-    """
-    Generates the notes of a scale based on its formula.
-    Example: get_notes_in_scale('C', 'major') -> ['C', 'D', 'E', 'F', 'G', 'A', 'B']
-    """
-    if scale_type not in SCALE_FORMULAS:
-        raise ValueError(f"Unknown scale type: {scale_type}")
-
-    root_index = get_note_index(root_note)
-    scale_intervals = SCALE_FORMULAS[scale_type]
-
-    current_index = root_index
-    scale_notes = [CHROMATIC_NOTES[root_index]] # Start with the root note
-
-    for interval in scale_intervals:
-        current_index = (current_index + interval) % len(CHROMATIC_NOTES)
-        scale_notes.append(CHROMATIC_NOTES[current_index])
-
-    return scale_notes
-
-# Let's test our function immediately!
 if __name__ == "__main__":
-    # Quick test to see if our logic works
-    print("C Major Scale:", get_notes_in_scale('C', 'major'))
-    print("A Minor Pentatonic Scale:", get_notes_in_scale('A', 'minor_pentatonic'))
-    print("Gb Major Scale:", get_notes_in_scale('Gb', 'major')) # Should handle flats
+    guitar = Fretboard()
+    c_major_scale = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
+
+    print("Visualizing the entire fretboard:")
+    guitar.visualize_fretboard()
+
+    print("\nVisualizing the C Major scale on the fretboard:")
+    guitar.visualize_fretboard(highlight_notes=c_major_scale)
