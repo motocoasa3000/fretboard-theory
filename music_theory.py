@@ -1,43 +1,35 @@
-# 1. The Chromatic Scale: All 12 notes. Using sharps for consistency.
+# music_theory.py
 CHROMATIC_NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+STANDARD_TUNING = ['E2', 'A2', 'D3', 'G3', 'B3', 'E4']
 
-# 2. Standard Guitar Tuning (6 strings, from low to high)
-STANDARD_TUNING = ['E2', 'A2', 'D3', 'G3', 'B3', 'E4'] # Adding octave numbers for clarity, though for scales it's often irrelevant.
-
-# 3. Scale Formulas: Defined by the sequence of intervals (in half-steps) from the root.
 SCALE_FORMULAS = {
-    "major": [2, 2, 1, 2, 2, 2, 1],           # Whole, Whole, Half, Whole, Whole, Whole, Half
+    "major": [2, 2, 1, 2, 2, 2, 1],
     "natural_minor": [2, 1, 2, 2, 1, 2, 2],
     "major_pentatonic": [2, 2, 3, 2, 3],
     "minor_pentatonic": [3, 2, 2, 3, 2],
-    "harmonic_minor": [2, 1, 2, 2, 1, 3, 1],  # Let's add a more complex one to show depth.
+    "harmonic_minor": [2, 1, 2, 2, 1, 3, 1],
 }
 
-# 4. Chord Formulas: Defined by the intervals (in half-steps) that make up the chord.
 CHORD_FORMULAS = {
-    "maj": [0, 4, 7],       # Root, Major 3rd, Perfect 5th
-    "min": [0, 3, 7],       # Root, Minor 3rd, Perfect 5th
-    "dim": [0, 3, 6],       # Root, Minor 3rd, Diminished 5th
-    "7": [0, 4, 7, 10],     # Dominant 7th: Root, Maj 3, Perf 5, Min 7
-    "maj7": [0, 4, 7, 11],  # Major 7th: Root, Maj 3, Perf 5, Maj 7
-    "min7": [0, 3, 7, 10],  # Minor 7th: Root, Min 3, Perf 5, Min 7
+    "maj": [0, 4, 7],
+    "min": [0, 3, 7],
+    "dim": [0, 3, 6],
+    "7": [0, 4, 7, 10],
+    "maj7": [0, 4, 7, 11],
+    "min7": [0, 3, 7, 10],
 }
-
-# music_theory.py (continued)
 
 def get_note_index(note_name):
     """
     Finds the position of a note in the CHROMATIC_NOTES list, ignoring octave.
-    Example: get_note_index('C#') -> 1, get_note_index('Eb') -> 3 (But we use D#)
+    Example: get_note_index('C#') -> 1, get_note_index('Eb') -> 3
     """
-    base_note = note_name[0]  # Get just the letter part (C, D, E, etc.)
+    base_note = note_name[0]
     if len(note_name) > 1 and note_name[1] == 'b':
-        # Handle flats by converting them to sharps for simplicity in our model.
-        # This is a music theory logic decision! C# and Db are enharmonic equivalents.
         flat_to_sharp = {'Cb': 'B', 'Db': 'C#', 'Eb': 'D#', 'Fb': 'E', 'Gb': 'F#', 'Ab': 'G#', 'Bb': 'A#'}
-        base_note = flat_to_sharp.get(note_name[:2], base_note) # Use the first two chars if it's a flat
+        base_note = flat_to_sharp.get(note_name[:2], base_note)
     else:
-        base_note = note_name # It's a natural or sharp
+        base_note = note_name
 
     try:
         return CHROMATIC_NOTES.index(base_note)
@@ -56,7 +48,7 @@ def get_notes_in_scale(root_note, scale_type):
     scale_intervals = SCALE_FORMULAS[scale_type]
 
     current_index = root_index
-    scale_notes = [CHROMATIC_NOTES[root_index]] # Start with the root note
+    scale_notes = [CHROMATIC_NOTES[root_index]]
 
     for interval in scale_intervals:
         current_index = (current_index + interval) % len(CHROMATIC_NOTES)
@@ -64,9 +56,27 @@ def get_notes_in_scale(root_note, scale_type):
 
     return scale_notes
 
-# Let's test our function immediately!
+def get_chord_notes(root_note, chord_type):
+    """
+    Generates the notes of a chord based on its formula.
+    Example: get_chord_notes('C', 'maj') -> ['C', 'E', 'G']
+    """
+    if chord_type not in CHORD_FORMULAS:
+        raise ValueError(f"Unknown chord type: {chord_type}")
+
+    root_index = get_note_index(root_note)
+    chord_intervals = CHORD_FORMULAS[chord_type]
+
+    chord_notes = []
+    for interval in chord_intervals:
+        note_index = (root_index + interval) % len(CHROMATIC_NOTES)
+        chord_notes.append(CHROMATIC_NOTES[note_index])
+
+    return chord_notes
+
 if __name__ == "__main__":
-    # Quick test to see if our logic works
+    # Test the functions
     print("C Major Scale:", get_notes_in_scale('C', 'major'))
-    print("A Minor Pentatonic Scale:", get_notes_in_scale('A', 'minor_pentatonic'))
-    print("Gb Major Scale:", get_notes_in_scale('Gb', 'major')) # Should handle flats
+    print("A Minor Pentatonic:", get_notes_in_scale('A', 'minor_pentatonic'))
+    print("C Major Chord:", get_chord_notes('C', 'maj'))
+    print("D Minor Chord:", get_chord_notes('D', 'min'))
