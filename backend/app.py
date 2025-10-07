@@ -6,9 +6,9 @@ from fretboard import Fretboard
 app = Flask(__name__)
 CORS(app)
 
-@app.route('/')
-def home():
-    return jsonify({"message": "Flask server is working! Use /api/scales or /api/scale?root=C&type=major"})
+# @app.route('/')
+# def home():
+#   return jsonify({"message": "Flask server is working! Use /api/scales or /api/scale?root=C&type=major"})
 
 @app.route('/api/scales', methods=['GET'])
 def get_available_scales():
@@ -29,6 +29,7 @@ def get_scale():
     scale_type = request.args.get('type', 'major')
 
     try:
+        print(f"Processing request: root={root_note}, type={scale_type}")  # ADD THIS
         scale_notes = get_notes_in_scale(root_note, scale_type)
         guitar = Fretboard()
         positions = guitar.find_notes(scale_notes)
@@ -40,6 +41,7 @@ def get_scale():
             'scale_type': scale_type
         })
     except ValueError as e:
+        print(f"ERROR: {str(e)}")  # ADD THIS
         return jsonify({'error': str(e)}), 400
 
 

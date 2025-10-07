@@ -19,22 +19,24 @@ CHORD_FORMULAS = {
     "min7": [0, 3, 7, 10],
 }
 
+
 def get_note_index(note_name):
     """
     Finds the position of a note in the CHROMATIC_NOTES list, ignoring octave.
-    Example: get_note_index('C#') -> 1, get_note_index('Eb') -> 3
+    Example: get_note_index('C#') -> 1, get_note_index('Eb') -> 3, get_note_index('E2') -> 4
     """
-    base_note = note_name[0]
-    if len(note_name) > 1 and note_name[1] == 'b':
+    # Remove octave number if present (e.g., 'E2' becomes 'E', 'A#4' becomes 'A#')
+    base_note = note_name.rstrip('0123456789')
+
+    if len(base_note) > 1 and base_note[1] == 'b':
+        # Handle flats by converting them to sharps
         flat_to_sharp = {'Cb': 'B', 'Db': 'C#', 'Eb': 'D#', 'Fb': 'E', 'Gb': 'F#', 'Ab': 'G#', 'Bb': 'A#'}
-        base_note = flat_to_sharp.get(note_name[:2], base_note)
-    else:
-        base_note = note_name
+        base_note = flat_to_sharp.get(base_note, base_note)
 
     try:
         return CHROMATIC_NOTES.index(base_note)
     except ValueError:
-        raise ValueError(f"Note '{note_name}' is not a valid note name.")
+        raise ValueError(f"Note '{note_name}' (base: '{base_note}') is not a valid note name.")
 
 def get_notes_in_scale(root_note, scale_type):
     """
