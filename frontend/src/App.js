@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 
-const API_BASE = 'http://localhost:5001';
+const API_BASE = 'http://127.0.0.1:5001';
 
 function App() {
   const [scales, setScales] = useState([]);
@@ -28,9 +28,9 @@ function App() {
     setLoading(true);
     try {
       const endpoint = mode === 'scale' ? 'scale' : 'chord';
-      const response = await axios.get(
-        `${API_BASE}/api/${endpoint}?root=${selectedRoot}&type=${selectedType}`
-      );
+      const url = `${API_BASE}/api/${endpoint}?root=${selectedRoot}&type=${selectedType}`;
+      console.log("Fetching from URL:", url);
+      const response = await axios.get(url);
       setFretboardData(response.data);
     } catch (error) {
       console.error('Error fetching data:', error);
