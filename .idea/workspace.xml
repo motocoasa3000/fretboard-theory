@@ -4,12 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64155676-daa7-40d9-bb27-8c1af3a6beec" name="Changes" comment="fretboard theory app.js update">
+    <list default="true" id="64155676-daa7-40d9-bb27-8c1af3a6beec" name="Changes" comment="fretboard theory json update">
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_10_3_2025_1_35_PM_[Changes]/shelved.patch" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/music_theory.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/music_theory.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -328,7 +325,23 @@
       <option name="project" value="LOCAL" />
       <updated>1759846146725</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="fretboard theory py update">
+      <option name="closed" value="true" />
+      <created>1759846667081</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1759846667081</updated>
+    </task>
+    <task id="LOCAL-00017" summary="fretboard theory json update">
+      <option name="closed" value="true" />
+      <created>1759846752228</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1759846752228</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -358,6 +371,8 @@
     <MESSAGE value="fretboard theory start" />
     <MESSAGE value="fretboard theory update" />
     <MESSAGE value="fretboard theory app.js update" />
-    <option name="LAST_COMMIT_MESSAGE" value="fretboard theory app.js update" />
+    <MESSAGE value="fretboard theory py update" />
+    <MESSAGE value="fretboard theory json update" />
+    <option name="LAST_COMMIT_MESSAGE" value="fretboard theory json update" />
   </component>
 </project>
